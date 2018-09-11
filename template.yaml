@@ -7,17 +7,19 @@ Description: >
 # https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 3
-    Runtime: python3.6
+    Handler: app.handler
     MemorySize: 128
+    Runtime: python3.6
+    Timeout: 3
+    Tracing: Active
 
 # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md
 Resources:
   HelloWorldFunction:
     Type: AWS::Serverless::Function
+    FunctionName: HelloWorld
     Properties:
       CodeUri: hello_world/
-      Handler: app.lambda_handler
       Events:
         HelloWorld:
           Type: Api
