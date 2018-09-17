@@ -1,7 +1,7 @@
 resource "aws_s3_bucket" "deployments" {
-  bucket = "pinub-deployments"
+  bucket = "macnerd-deployments"
 
   tags {
-    namespace = "pinub"
+    namespace = "macnerd"
   }
 }
