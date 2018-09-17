@@ -27,6 +27,46 @@ Resources:
             Path: /hello
             Method: get
 
+  NotificationFunction:
+    Type: AWS::Serverless::Function
+    FunctionName: notification
+    Properties:
+      CodeUri: notification
+      Events:
+        Callback:
+          Type: Api
+          Properties:
+            Path: /topic/{id}
+            Method: get
+
+  SubscribeFunction:
+    Type: AWS::Serverless::Function
+    FunctionName: subscribe
+    Properties:
+      CodeUri: subscribe/
+      Events:
+        Stream:
+          Type: DynamoDB
+          Properties:
+            Stream: !GetAtt TopicTable.StreamArn
+            BatchSize: 10
+            StartingPosition: TRIM_HORIZON
+
+  TopicTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
+
 Outputs:
 
     HelloWorldApi:
