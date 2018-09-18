@@ -6,8 +6,10 @@ logger.setLevel(logging.INFO)
 
 
 def handler(event, context):
-    logging.info(event['path'])
-    return {}
+    logging.info(event)
+    return {
+        'statusCode': '200'
+    }
 
 
 if __name__ == '__main__':

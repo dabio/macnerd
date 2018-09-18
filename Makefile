@@ -21,5 +21,8 @@ deploy:
 		--capabilities CAPABILITY_IAM
 
 clean:
-	rm ${OUTPUT_TEMPLATE_FILE}
+	rm -f ${OUTPUT_TEMPLATE_FILE}
 	aws s3 rm --recursive s3://${S3_BUCKET}/
+
+destroy: clean
+	aws cloudformation delete-stack --stack-name ${STACK_NAME}
