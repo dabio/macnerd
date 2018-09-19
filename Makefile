@@ -26,3 +26,8 @@ clean:
 
 destroy: clean
 	aws cloudformation delete-stack --stack-name ${STACK_NAME}
+
+test:
+	# only way to prevent creation of __pycache__ directories
+	# https://stackoverflow.com/a/47893653/3833166
+	PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -p no:cacheprovider

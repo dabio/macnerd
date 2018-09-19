@@ -1,4 +1,3 @@
-import json
 import logging
 
 logger = logging.getLogger()
@@ -10,8 +9,3 @@ def handler(event, context):
     return {
         'statusCode': '200'
     }
-
-
-if __name__ == '__main__':
-    with open('event.json') as f:
-        handler(json.loads(f.read()), False)

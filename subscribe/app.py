@@ -1,8 +1,9 @@
-import json
 import logging
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
+
+INSERT = 'INSERT'
 
 
 class Topic(object):
@@ -16,11 +17,11 @@ class Topic(object):
 
 def handler(event, context):
     logging.info(event)
-    for item in event['Records']:
+    records = [r for r in event['Records'] if r['eventName'] == INSERT]
+    topics = []
+    for item in records:
         topic = Topic(item['dynamodb']['NewImage'])
         topic.subscribe()
+        topics.append(topic)
 
-
-if __name__ == '__main__':
-    with open('event.json') as f:
-        handler(json.dumps(f.read()), False)
+    return [t.id for t in topics]

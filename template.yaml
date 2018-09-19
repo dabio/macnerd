@@ -17,9 +17,9 @@ Globals:
 Resources:
   VerifyFunction:
     Type: AWS::Serverless::Function
-    FunctionName: verify
     Properties:
       CodeUri: verify/
+      FunctionName: macnerd-verify
       Events:
         Callback:
           Type: Api
@@ -28,9 +28,9 @@ Resources:
             Method: get
   NotificationFunction:
     Type: AWS::Serverless::Function
-    FunctionName: notification
     Properties:
       CodeUri: notification
+      FunctionName: macnerd-notification
       Events:
         Callback:
           Type: Api
@@ -39,20 +39,21 @@ Resources:
             Method: post
   SubscribeFunction:
     Type: AWS::Serverless::Function
-    FunctionName: subscribe
     Properties:
       CodeUri: subscribe/
+      FunctionName: macnerd-subscribe
       Events:
         Stream:
           Type: DynamoDB
           Properties:
-            Stream: !GetAtt TopicTable.StreamArn
+            Stream: !GetAtt Topic.StreamArn
             BatchSize: 10
             StartingPosition: TRIM_HORIZON
 
-  TopicTable:
+  Topic:
     Type: AWS::DynamoDB::Table
     Properties:
+      TableName: macnerd-topic
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
