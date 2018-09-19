@@ -66,7 +66,30 @@ Resources:
       StreamSpecification:
         StreamViewType: NEW_IMAGE
 
-# Outputs:
+  User:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: macnerd-users
+      UsernameAttributes:
+        - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 6
+          RequireLowercase: false
+          RequireNumbers: false
+          RequireSymbols: false
+          RequireUppercase: false
+
+  Client:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: macnerd
+      ExplicitAuthFlows:
+        - USER_PASSWORD_AUTH
+      GenerateSecret: true
+      UserPoolId: !Ref User
+
+# Output:
 
 #     HelloWorldApi:
 #       Description: "API Gateway endpoint URL for Prod stage for Hello World function"
