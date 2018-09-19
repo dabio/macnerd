@@ -1,5 +1,7 @@
 # Serverless Application Model Test (SAM Test)
 
+[![Build Status](https://semaphoreci.com/api/v1/dabio/macnerd/branches/master/badge.svg)](https://semaphoreci.com/dabio/macnerd)
+
 A test application using [AWS SAM](https://github.com/awslabs/serverless-application-model).
 
 ## Requirements
