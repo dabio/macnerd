@@ -15,6 +15,7 @@ Globals:
 
 # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md
 Resources:
+  # FUNCTIONS
   VerifyFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -31,6 +32,11 @@ Resources:
     Properties:
       CodeUri: notification
       FunctionName: macnerd-notification
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Item
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Topic
       Events:
         Callback:
           Type: Api
@@ -50,6 +56,7 @@ Resources:
             BatchSize: 10
             StartingPosition: TRIM_HORIZON
 
+  # TABLES
   Topic:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -65,7 +72,23 @@ Resources:
         WriteCapacityUnits: 5
       StreamSpecification:
         StreamViewType: NEW_IMAGE
+  Item:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: macnerd-item
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
 
+  # USERPOOL
   User:
     Type: AWS::Cognito::UserPool
     Properties:
@@ -79,7 +102,6 @@ Resources:
           RequireNumbers: false
           RequireSymbols: false
           RequireUppercase: false
-
   Client:
     Type: AWS::Cognito::UserPoolClient
     Properties:
