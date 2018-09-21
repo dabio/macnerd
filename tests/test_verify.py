@@ -58,5 +58,11 @@ def wrong_topic_id_event():
     return {
         'pathParameters': {
             'id': '2be193d3-96f7-4bea-a48d-e8edc21b2731'
+        },
+        "queryStringParameters": {
+            "hub.challenge": CHALLENGE,
+            "hub.lease_seconds": "315360000",
+            "hub.mode": "subscribe",
+            "hub.topic": "https://daringfireball.net/feeds/main"
         }
     }

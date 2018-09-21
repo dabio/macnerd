@@ -1,3 +1,4 @@
 packaged-template.yaml
 .site-packages/
 .terraform/
+terraform.tfstate.*.backup
