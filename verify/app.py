@@ -8,22 +8,23 @@ TOPIC = "macnerd-topic"
 
 
 def respond(code=200, body=None):
-    return {
-        'statusCode': code,
-        'body': body
-    }
+    return {"statusCode": code, "body": body}
 
 
 def handler(event, context):
     logging.info(event)
 
-    challenge = event.get('queryStringParameters', {}).get('hub.challenge')
+    params = event.get("queryStringParameters")
+    if not params:
+        return respond(400)
+
+    challenge = params.get("hub.challenge")
     if not challenge:
         return respond(400)
 
-    table = boto3.resource('dynamodb').Table(TOPIC)
-    topic_id = event.get('pathParameters', {}).get('id')
-    if not table.get_item(Key={'id': topic_id}).get('Item'):
+    table = boto3.resource("dynamodb").Table(TOPIC)
+    topic_id = event.get("pathParameters").get("id")
+    if not table.get_item(Key={"id": topic_id}).get("Item"):
         return respond(400)
 
     return respond(200, challenge)
