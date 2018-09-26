@@ -7,7 +7,12 @@ variable "name" {
   type = "string"
 }
 
-variable "policy" {
+variable "policies" {
+  type    = "list"
+  default = []
+}
+
+variable "policies_count" {
   type    = "string"
   default = ""
 }

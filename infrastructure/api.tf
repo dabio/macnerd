@@ -1,3 +1,29 @@
+resource "aws_api_gateway_rest_api" "hub" {
+  name = "macnerd-hub"
+
+  endpoint_configuration {
+    types = ["${local.type}"]
+  }
+}
+
+resource "aws_api_gateway_stage" "prod" {
+  rest_api_id   = "${aws_api_gateway_rest_api.hub.id}"
+  stage_name    = "${local.stage_name}"
+  deployment_id = "${aws_api_gateway_deployment.prod.id}"
+
+  xray_tracing_enabled = true
+}
+
+resource "aws_api_gateway_deployment" "prod" {
+  rest_api_id = "${aws_api_gateway_rest_api.hub.id}"
+  stage_name  = "${local.stage_name}"
+
+  depends_on = [
+    "aws_api_gateway_integration.verify",
+    "aws_api_gateway_integration.notification",
+  ]
+}
+
 resource "aws_api_gateway_domain_name" "hub" {
   domain_name = "hub.${local.domain}"
 
@@ -8,22 +34,10 @@ resource "aws_api_gateway_domain_name" "hub" {
   }
 }
 
-resource "aws_api_gateway_rest_api" "hub" {
-  name = "macnerd-hub"
-
-  endpoint_configuration {
-    types = ["${local.type}"]
-  }
-}
-
-resource "aws_api_gateway_deployment" "prod" {
-  rest_api_id = "${aws_api_gateway_rest_api.hub.id}"
-  stage_name  = "prod"
-
-  depends_on = [
-    "aws_api_gateway_integration.verify",
-    "aws_api_gateway_integration.notification",
-  ]
+resource "aws_api_gateway_base_path_mapping" "hub" {
+  api_id      = "${aws_api_gateway_rest_api.hub.id}"
+  stage_name  = "${aws_api_gateway_stage.prod.stage_name}"
+  domain_name = "${aws_api_gateway_domain_name.hub.domain_name}"
 }
 
 resource "aws_api_gateway_resource" "topic" {
@@ -59,7 +73,7 @@ resource "aws_lambda_permission" "verify" {
   action        = "lambda:InvokeFunction"
   function_name = "${module.lambda_verify.function_name}"
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_deployment.prod.execution_arn}/${aws_api_gateway_method.verify.http_method}${aws_api_gateway_resource.topic.path}"
+  source_arn    = "${aws_api_gateway_stage.prod.execution_arn}/${aws_api_gateway_method.verify.http_method}${aws_api_gateway_resource.topic.path}"
 }
 
 # notification
@@ -88,5 +102,5 @@ resource "aws_lambda_permission" "notification" {
   action        = "lambda:InvokeFunction"
   function_name = "${module.lambda_notification.function_name}"
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_deployment.prod.execution_arn}/${aws_api_gateway_method.notification.http_method}${aws_api_gateway_resource.topic.path}"
+  source_arn    = "${aws_api_gateway_stage.prod.execution_arn}/${aws_api_gateway_method.notification.http_method}${aws_api_gateway_resource.topic.path}"
 }

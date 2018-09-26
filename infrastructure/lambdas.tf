@@ -24,7 +24,10 @@ module "lambda_verify" {
   name      = "verify"
   filename  = "${data.archive_file.verify.output_path}"
   checksum  = "${data.archive_file.verify.output_base64sha256}"
-  policy    = "${data.aws_iam_policy_document.verify.json}"
+  policies  = ["${data.aws_iam_policy_document.verify.json}"]
+
+  # see https://github.com/hashicorp/terraform/issues/10857
+  policies_count = 1
 }
 
 data "archive_file" "notification" {
@@ -64,7 +67,10 @@ module "lambda_notification" {
   name      = "notification"
   filename  = "${data.archive_file.notification.output_path}"
   checksum  = "${data.archive_file.notification.output_base64sha256}"
-  policy    = "${data.aws_iam_policy_document.notification.json}"
+  policies  = ["${data.aws_iam_policy_document.notification.json}"]
+
+  # see https://github.com/hashicorp/terraform/issues/10857
+  policies_count = 1
 }
 
 #

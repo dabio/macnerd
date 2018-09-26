@@ -38,19 +38,19 @@ resource "aws_iam_role_policy_attachment" "xray" {
 }
 
 resource "aws_iam_role_policy_attachment" "custom" {
-  count = "${length(var.policy) > 0 ? 1 : 0}"
+  count = "${var.policies_count}"
 
   role       = "${aws_iam_role.main.name}"
-  policy_arn = "${aws_iam_policy.main.arn}"
+  policy_arn = "${element(aws_iam_policy.main.*.arn, count.index)}"
 }
 
 resource "aws_iam_policy" "main" {
-  count = "${length(var.policy) > 0 ? 1 : 0}"
+  count = "${var.policies_count}"
 
-  name        = "${var.namespace}-lambda-${var.name}-policy"
+  name        = "${var.namespace}-lambda-${var.name}-policy-${count.index + 1}"
   description = "Managed by Terraform"
 
-  policy = "${var.policy}"
+  policy = "${var.policies[count.index]}"
 }
 
 data "aws_iam_policy_document" "assume" {

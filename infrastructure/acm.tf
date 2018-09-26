@@ -27,12 +27,14 @@ resource "aws_route53_record" "certificate_validation" {
   ]
 }
 
-resource "aws_acm_certificate_validation" "main" {
-  count = "${length(aws_acm_certificate.main.domain_validation_options)}"
+# doesn't work ¯\_(ツ)_/¯
+#resource "aws_acm_certificate_validation" "main" {
+#  count = "${length(aws_acm_certificate.main.domain_validation_options)}"
+#
+#  certificate_arn = "${aws_acm_certificate.main.arn}"
+#
+#  validation_record_fqdns = [
+#    "${element(aws_route53_record.certificate_validation.*.fqdn, count.index)}",
+#  ]
+#}
 
-  certificate_arn = "${aws_acm_certificate.main.arn}"
-
-  validation_record_fqdns = [
-    "${element(aws_route53_record.certificate_validation.*.fqdn, count.index)}",
-  ]
-}
