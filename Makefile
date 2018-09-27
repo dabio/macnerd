@@ -12,6 +12,11 @@ backup:
 		aws dynamodb create-backup --table-name $$t --backup-name $$t-${NOW}; \
 	done
 
+deploy:
+	cd infrastructure && terraform apply
+
+
+
 test:
 	# only way to prevent creation of __pycache__ directories
 	# https://stackoverflow.com/a/47893653/3833166
