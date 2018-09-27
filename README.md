@@ -1,21 +1,20 @@
-# Serverless Application Model Test (SAM Test)
+# macnerd
 
 [![Build Status](https://semaphoreci.com/api/v1/dabio/macnerd/branches/master/badge.svg)](https://semaphoreci.com/dabio/macnerd)
 
-A test application using [AWS SAM](https://github.com/awslabs/serverless-application-model).
+A simple news feed aggregator. Uses superfeedr.
 
 ## Requirements
 
-* `pip3 install --user awscli`
+* `brew install terrafrom`
+* `pip3 install --user awscli boto3`
 
 ## Commands
 
-* `make package`
-  Creates the CloudFormation Stack yaml file.
+* `make backup`
+  Create a backup of the dynamodb tables.
 * `make deploy`
-  Pushes the CloudFormation Stack live.
-* `make clean`
-  Deletes fragments on S3 bucket.
+  Pushes everything live.
 
 ## Tests
 

@@ -1,31 +1,21 @@
 #!/bin/bash
 
 STACK_NAME ?= macnerd
-S3_BUCKET ?= ${STACK_NAME}-deployments
-TEMPLATE_FILE ?= template.yaml
-OUTPUT_TEMPLATE_FILE ?= packaged-${TEMPLATE_FILE}
+NOW = $(shell date +%s)
+TABLES = "${STACK_NAME}-topic" "${STACK_NAME}-item"
 
 all:
 	@echo "hello world"
 
-package: clean
-	aws cloudformation package \
-		--template-file ${TEMPLATE_FILE} \
-		--s3-bucket ${S3_BUCKET} \
-		--output-template-file ${OUTPUT_TEMPLATE_FILE}
+backup:
+	@for t in ${TABLES}; do \
+		aws dynamodb create-backup --table-name $$t --backup-name $$t-${NOW}; \
+	done
 
 deploy:
-	aws cloudformation deploy \
-		--template-file ${OUTPUT_TEMPLATE_FILE} \
-		--stack-name ${STACK_NAME} \
-		--capabilities CAPABILITY_IAM
+	cd infrastructure && terraform apply
 
-clean:
-	rm -f ${OUTPUT_TEMPLATE_FILE}
-	aws s3 rm --recursive s3://${S3_BUCKET}/
 
-destroy: clean
-	aws cloudformation delete-stack --stack-name ${STACK_NAME}
 
 test:
 	# only way to prevent creation of __pycache__ directories
