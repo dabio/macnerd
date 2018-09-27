@@ -72,13 +72,3 @@ module "lambda_notification" {
   # see https://github.com/hashicorp/terraform/issues/10857
   policies_count = 1
 }
-
-#
-#resource "aws_lambda_permission" "notification" {
-#  statement_id  = "AllowExecutionFromAPIGateway"
-#  action        = "lambda:InvokeFunction"
-#  function_name = "${aws_lambda_function.notification.function_name}"
-#  principal     = "apigateway.amazonaws.com"
-#  source_arn    = "${aws_api_gateway_deployment.prod.execution_arn}/${aws_api_gateway_method.notification.http_method}${aws_api_gateway_resource.topic.path}"
-#}
-
